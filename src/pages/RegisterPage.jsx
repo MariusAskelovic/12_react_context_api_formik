@@ -48,15 +48,16 @@ export default function RegisterPage() {
       password: Yup.string()
         .required('all fields are required')
         .min(8, 'Password must contain at least 8 symbols'),
-      password2: Yup.string()
-        .required('all fields are required')
-        .min(8, 'Password must contain at least 8 symbols'),
+      password2: Yup.string().oneOf(
+        [Yup.ref('password'), null],
+        'Password must match'
+      ),
     }),
     onSubmit: (value) => {
       console.log('value ===', value);
-      if (value.password === value.password2) {
-        handleRegister(value);
-      }
+      //   if (value.password === value.password2) {
+      handleRegister(value);
+      //   }
     },
   });
 
