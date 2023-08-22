@@ -31,6 +31,11 @@ const ErrorMsg = styled.p`
   }
 `;
 
+const LoginMsg = styled.h3`
+  text-shadow: 2px 1px 5px red;
+  font-size: 24px;
+`;
+
 export default function RegisterPage() {
   const [loginStatus, setLoginStatus] = useState('');
   const formik = useFormik({
@@ -86,8 +91,10 @@ export default function RegisterPage() {
   //   const ctx = useContext(AuthContext);
   return (
     <Wrap>
-      {loginStatus === 'success' && <h2>Sveikiname, Jums pavyko</h2>}
-      {loginStatus === 'failed' && <h2>Bandykite dar karta</h2>}
+      {loginStatus === 'success' && (
+        <LoginMsg>Sveikiname, Jums pavyko</LoginMsg>
+      )}
+      {loginStatus === 'failed' && <LoginMsg>Bandykite dar karta</LoginMsg>}
       {loginStatus !== 'success' && (
         <Form onSubmit={formik.handleSubmit}>
           <Input
