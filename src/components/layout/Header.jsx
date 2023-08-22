@@ -1,6 +1,8 @@
 import { Link, NavLink } from 'react-router-dom';
 import { styled } from 'styled-components';
 import Wrap from '../../styled/Wrap.styled';
+import { useContext } from 'react';
+import AuthContext from '../../store/AuthContext';
 
 const HeaderContainer = styled(Wrap)`
   display: flex;
@@ -31,14 +33,17 @@ const OneLink = styled(NavLink)`
 `;
 
 export default function Header() {
+  const ctx = useContext(AuthContext);
+  console.log('ctx ===', ctx);
   return (
     <HeaderContainer as={'header'}>
       <Logo to={'/'}>OurLogo</Logo>
       <Nav>
         <OneLink to={'/'}>Home</OneLink>
         <OneLink to={'/about'}>About Us</OneLink>
-        <OneLink to={'/vip'}>VIP</OneLink>
-        <OneLink to={'/login'}>Login</OneLink>
+        {ctx.isUserLoggedIn && <OneLink to={'/vip'}>VIP</OneLink>}
+        {!ctx.isUserLoggedIn && <OneLink to={'/login'}>Login</OneLink>}
+        {ctx.isUserLoggedIn && <OneLink to={'/login'}>Logout</OneLink>}
       </Nav>
     </HeaderContainer>
   );

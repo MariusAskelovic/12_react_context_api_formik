@@ -3,7 +3,8 @@ import Wrap from '../styled/Wrap.styled';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import AuthContext from '../store/AuthContext';
 
 const Title = styled.h1`
   font-size: 36px;
@@ -44,6 +45,7 @@ const ErrorMsg = styled.p`
 `;
 
 export default function LoginPage() {
+  const ctx = useContext(AuthContext);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
   const formik = useFormik({
@@ -81,6 +83,7 @@ export default function LoginPage() {
         console.log(ats.data.token);
         if (ats.data.token) {
           setLoginSuccess(true);
+          ctx.login(formik.values.email);
         }
       })
       .catch((error) => {
