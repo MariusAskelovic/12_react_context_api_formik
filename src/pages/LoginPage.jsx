@@ -2,6 +2,8 @@ import { styled } from 'styled-components';
 import Wrap from '../styled/Wrap.styled';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import { useState } from 'react';
 
 const Title = styled.h1`
   font-size: 36px;
@@ -14,11 +16,11 @@ const Input = styled.input`
   font-size: 16px;
   padding: 0.3em 0.8em;
   border-radius: 4px;
-  border: 1px solid ${(props) => (props.isError ? 'red' : '#777')};
+  border: 1px solid ${(props) => (props.$isError ? 'red' : '#777')};
   display: block;
   margin-bottom: 10px;
   width: 100%;
-  background-color: ${(props) => (props.isError ? '#da9b90' : 'transparent')};
+  background-color: ${(props) => (props.$isError ? '#da9b90' : 'transparent')};
 `;
 const SubmitBtn = styled.button.attrs({
   type: 'submit',
@@ -42,9 +44,11 @@ const ErrorMsg = styled.p`
 `;
 
 export default function LoginPage() {
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
   const formik = useFormik({
     initialValues: {
-      email: '',
+      email: 'emma.wong@reqres.in',
       password: '',
     },
     validationSchema: Yup.object({
@@ -63,42 +67,71 @@ export default function LoginPage() {
         .trim(),
     }),
     onSubmit: (values) => {
-      console.log('forma pateikta, duomenys:', values);
+      //   console.log('forma pateikta, duomenys:', values);
+      handleLogin(values);
     },
   });
+
+  function handleLogin(userCredentialsObj) {
+    console.log('userCredentialsObj ===', userCredentialsObj);
+    axios
+      .post('https://reqres.in/api/login', userCredentialsObj)
+      .then((ats) => {
+        console.log(ats);
+        console.log(ats.data.token);
+        if (ats.data.token) {
+          setLoginSuccess(true);
+        }
+      })
+      .catch((error) => {
+        console.warn();
+        console.log('error.response.data.error ===', error.response.data.error);
+        // formik.errors.email = error.response.data.error;
+        // formik.setErrors({ email: error.response.data.error });
+        formik.setErrors({ email: 'Email or password not found' });
+      });
+  }
+
   //   console.log('formik.values ===', formik.values);
 
   return (
     <Wrap>
       <Title>LoginPage</Title>
-      <FormContainer onSubmit={formik.handleSubmit}>
-        <Input
-          isError={formik.touched.email && formik.errors.email}
-          onChange={formik.handleChange}
-          value={formik.values.email}
-          type='text'
-          placeholder='Email'
-          id='email'
-          onBlur={formik.handleBlur}
-        />
+      {loginSuccess && (
+        <div>
+          <h2>Sekmingai prisijungete kaip {formik.values.email}</h2>
+        </div>
+      )}
+      {!loginSuccess && (
+        <FormContainer onSubmit={formik.handleSubmit}>
+          <Input
+            $isError={formik.touched.email && formik.errors.email}
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            type='text'
+            placeholder='Email'
+            id='email'
+            onBlur={formik.handleBlur}
+          />
 
-        {formik.touched.email && formik.errors.email ? (
-          <ErrorMsg>{formik.errors.email}</ErrorMsg>
-        ) : null}
-        <Input
-          isError={formik.touched.password && formik.errors.password}
-          onChange={formik.handleChange}
-          value={formik.values.password}
-          type='password'
-          placeholder='Password'
-          id='password'
-          onBlur={formik.handleBlur}
-        />
-        {formik.touched.password && formik.errors.password && (
-          <ErrorMsg>{formik.errors.password}</ErrorMsg>
-        )}
-        <SubmitBtn>Login</SubmitBtn>
-      </FormContainer>
+          {formik.touched.email && formik.errors.email ? (
+            <ErrorMsg>{formik.errors.email}</ErrorMsg>
+          ) : null}
+          <Input
+            $isError={formik.touched.password && formik.errors.password}
+            onChange={formik.handleChange}
+            value={formik.values.password}
+            type='password'
+            placeholder='Password'
+            id='password'
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.password && formik.errors.password && (
+            <ErrorMsg>{formik.errors.password}</ErrorMsg>
+          )}
+          <SubmitBtn>Login</SubmitBtn>
+        </FormContainer>
+      )}
     </Wrap>
   );
 }

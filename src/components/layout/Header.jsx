@@ -37,8 +37,8 @@ export default function Header() {
       <Nav>
         <OneLink to={'/'}>Home</OneLink>
         <OneLink to={'/about'}>About Us</OneLink>
-        <OneLink to={'/login'}>Login</OneLink>
         <OneLink to={'/vip'}>VIP</OneLink>
+        <OneLink to={'/login'}>Login</OneLink>
       </Nav>
     </HeaderContainer>
   );
