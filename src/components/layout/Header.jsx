@@ -34,7 +34,6 @@ const OneLink = styled(NavLink)`
 
 export default function Header() {
   const ctx = useContext(AuthContext);
-  console.log('ctx ===', ctx);
   return (
     <HeaderContainer as={'header'}>
       <Logo to={'/'}>OurLogo</Logo>

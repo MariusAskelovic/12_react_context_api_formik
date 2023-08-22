@@ -3,8 +3,8 @@ import Wrap from '../styled/Wrap.styled';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { useContext, useState } from 'react';
-// import AuthContext from '../store/AuthContext';
+import { useState } from 'react';
+import Feedback from '../components/Feedback';
 
 const Form = styled.form`
   width: 100%;
@@ -31,11 +31,6 @@ const ErrorMsg = styled.p`
   }
 `;
 
-const LoginMsg = styled.h3`
-  text-shadow: 2px 1px 5px red;
-  font-size: 24px;
-`;
-
 export default function RegisterPage() {
   const [loginStatus, setLoginStatus] = useState('');
   const formik = useFormik({
@@ -55,7 +50,7 @@ export default function RegisterPage() {
         .required('all fields are required'),
       password: Yup.string()
         .required('all fields are required')
-        .min(8, 'Password must contain at least 8 symbols'),
+        .min(2, 'Password must contain at least 8 symbols'),
       password2: Yup.string().oneOf(
         [Yup.ref('password'), null],
         'Password must match'
@@ -72,7 +67,7 @@ export default function RegisterPage() {
   function handleRegister(userCredentialsObj) {
     axios
       .post('https://reqres.in/api/register', userCredentialsObj)
-      .then((ats) => {
+      .then(() => {
         console.log('Sveiki sugryze :', userCredentialsObj.email);
         setLoginStatus('success');
         // console.log('loginStatus ===', loginStatus);
@@ -88,13 +83,10 @@ export default function RegisterPage() {
       });
   }
 
-  //   const ctx = useContext(AuthContext);
   return (
     <Wrap>
-      {loginStatus === 'success' && (
-        <LoginMsg>Sveikiname, Jums pavyko</LoginMsg>
-      )}
-      {loginStatus === 'failed' && <LoginMsg>Bandykite dar karta</LoginMsg>}
+      {loginStatus === 'success' && <Feedback status='success' />}
+      {loginStatus === 'failed' && <Feedback status='failed' />}
       {loginStatus !== 'success' && (
         <Form onSubmit={formik.handleSubmit}>
           <Input
