@@ -48,6 +48,7 @@ export default function Header() {
             Logout
           </OneLink>
         )}
+        {!ctx.isUserLoggedIn && <OneLink to={'/register'}>Register</OneLink>}
       </Nav>
     </HeaderContainer>
   );

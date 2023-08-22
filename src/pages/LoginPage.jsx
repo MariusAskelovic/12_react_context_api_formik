@@ -126,7 +126,7 @@ export default function LoginPage() {
             placeholder='Email'
             id='email'
           />
-          {formik.errors.email && formik.touched.email && (
+          {formik.touched.email && formik.errors.email && (
             <ErrorMsg>{formik.errors.email}</ErrorMsg>
           )}
           <Input

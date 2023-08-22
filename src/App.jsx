@@ -7,6 +7,7 @@ import VipPage from './pages/VipPage';
 import LoginPage from './pages/LoginPage';
 import AuthContext from './store/AuthContext';
 import { useState } from 'react';
+import RegisterPage from './pages/RegisterPage';
 
 export default function App() {
   const [userEmail, setUserEmail] = useState(null);
@@ -39,6 +40,9 @@ export default function App() {
         <Route path='/about' element={<AboutPage />} />
         {isUserLoggedIn && <Route path='/vip' element={<VipPage />} />}
         {!isUserLoggedIn && <Route path='/login' element={<LoginPage />} />}
+        {!isUserLoggedIn && (
+          <Route path='/register' element={<RegisterPage />} />
+        )}
       </Routes>
     </AuthContext.Provider>
   );
