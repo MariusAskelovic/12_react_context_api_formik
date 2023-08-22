@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import Wrap from '../styled/Wrap.styled';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -7,23 +7,27 @@ import { useContext, useState } from 'react';
 import AuthContext from '../store/AuthContext';
 
 const Title = styled.h1`
-  font-size: 36px;
+  font-size: 35px;
   font-weight: 500;
 `;
+
 const FormContainer = styled.form`
   max-width: 400px;
 `;
+
 const Input = styled.input`
   font-size: 16px;
   padding: 0.3em 0.8em;
   border-radius: 4px;
-  border: 1px solid ${(props) => (props.$isError ? 'red' : '#777')};
+  border: 1px solid ${(props) => (props.$isError ? 'tomato' : '#777')};
   display: block;
+  width: 300px;
   margin-bottom: 10px;
   width: 100%;
-  background-color: ${(props) => (props.$isError ? '#da9b90' : 'transparent')};
+  background-color: ${(props) => (props.$isError ? '#ffd8d1' : 'trasparent')};
 `;
-const SubmitBtn = styled.button.attrs({
+
+const SubmitBnt = styled.button.attrs({
   type: 'submit',
 })`
   background-color: #333;
@@ -37,7 +41,6 @@ const ErrorMsg = styled.p`
   padding: 0.2em 0.8em;
   font-size: 14px;
   margin-top: -5px;
-  width: 300px;
 
   /* &:empty {
     display: none;
@@ -55,21 +58,21 @@ export default function LoginPage() {
     },
     validationSchema: Yup.object({
       email: Yup.string()
+        .trim()
         .matches(
-          /^([a-ząčęėįšųūžA-ZĄČĘĖĮŠŲŪŽ0-9._%-]+@[a-ząčęėįšųūžA-ZĄČĘĖĮŠŲŪŽ0-9.-]+\.[a-zA-Z]{2,})$/,
-          'patikrinkite email adresa'
+          /^([a-ząčęėįšųūA-ZĄČĘĖĮŠŲŪ0-9._%-]+@[a-ząčęėįšųūA-ZĄČĘĖĮŠŲŪ0-9.-]+\.[a-zA-Z]{2,})$/,
+          'Patikrinkite Emaila'
         )
-        .required('required')
-        .min(3, 'minimum 3 simboliai')
-        .trim(),
+        .min(3, 'Minimum 3 simboliai')
+        .required('Privalomas laukas'),
       password: Yup.string()
-        .min(4, 'minimum 4 simboliai')
-        .max(8, 'maximum 8 simboliai')
-        .required('privalomas laukas')
-        .trim(),
+        .trim()
+        .min(4, 'Minimum 4 simboliai')
+        .max(8)
+        .required('Privalomas laukas'),
     }),
     onSubmit: (values) => {
-      //   console.log('forma pateikta, duomenys:', values);
+      console.log('forma pateikta, duomenys:', values);
       handleLogin(values);
     },
   });
@@ -79,15 +82,20 @@ export default function LoginPage() {
     axios
       .post('https://reqres.in/api/login', userCredentialsObj)
       .then((ats) => {
-        console.log(ats);
-        console.log(ats.data.token);
+        console.log('ats ===', ats);
+        // jei gavom token tai pavyko prisiloginti
+        // atspausdinti token
+        console.log('ats.data.token ===', ats.data.token);
+        // naviguosim i home arba vip page
         if (ats.data.token) {
+          console.log('Login pavyko');
           setLoginSuccess(true);
           ctx.login(formik.values.email);
         }
       })
       .catch((error) => {
-        console.warn();
+        // prisiloginti nepavyko
+        console.warn('ivyko klaida:', error);
         console.log('error.response.data.error ===', error.response.data.error);
         // formik.errors.email = error.response.data.error;
         // formik.setErrors({ email: error.response.data.error });
@@ -95,44 +103,45 @@ export default function LoginPage() {
       });
   }
 
-  //   console.log('formik.values ===', formik.values);
-
+  // console.log('formik.values ===', formik.values);
+  // console.log('formik.errors ===', formik.errors);
+  // console.log('formik.touched ===', formik.touched);
   return (
     <Wrap>
-      <Title>LoginPage</Title>
+      <Title>Login here</Title>
+
       {loginSuccess && (
         <div>
-          <h2>Sekmingai prisijungete kaip {formik.values.email}</h2>
+          <h2>Sekmimgai prisijungete kaip {formik.values.email}</h2>
         </div>
       )}
       {!loginSuccess && (
         <FormContainer onSubmit={formik.handleSubmit}>
           <Input
-            $isError={formik.touched.email && formik.errors.email}
+            $isError={formik.errors.email && formik.touched.email}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.email}
             type='text'
             placeholder='Email'
             id='email'
-            onBlur={formik.handleBlur}
           />
-
-          {formik.touched.email && formik.errors.email ? (
+          {formik.errors.email && formik.touched.email && (
             <ErrorMsg>{formik.errors.email}</ErrorMsg>
-          ) : null}
+          )}
           <Input
-            $isError={formik.touched.password && formik.errors.password}
+            isError={formik.errors.password && formik.touched.password}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.password}
             type='password'
             placeholder='Password'
             id='password'
-            onBlur={formik.handleBlur}
           />
-          {formik.touched.password && formik.errors.password && (
+          {formik.errors.password && formik.touched.password && (
             <ErrorMsg>{formik.errors.password}</ErrorMsg>
           )}
-          <SubmitBtn>Login</SubmitBtn>
+          <SubmitBnt>Login</SubmitBnt>
         </FormContainer>
       )}
     </Wrap>
