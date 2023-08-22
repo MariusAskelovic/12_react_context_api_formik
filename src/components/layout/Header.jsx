@@ -7,6 +7,8 @@ const HeaderContainer = styled(Wrap)`
   justify-content: space-between;
   gap: 15px;
   align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #b3b3b3;
 `;
 
 const Logo = styled(Link)`
@@ -35,6 +37,8 @@ export default function Header() {
       <Nav>
         <OneLink to={'/'}>Home</OneLink>
         <OneLink to={'/about'}>About Us</OneLink>
+        <OneLink to={'/login'}>Login</OneLink>
+        <OneLink to={'/vip'}>VIP</OneLink>
       </Nav>
     </HeaderContainer>
   );
