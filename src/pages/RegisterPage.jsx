@@ -2,17 +2,37 @@ import { styled } from 'styled-components';
 import Wrap from '../styled/Wrap.styled';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
 const Form = styled.form`
-  & input {
-    margin-bottom: 10px;
+  width: 100%;
+`;
+
+const Input = styled.input`
+  margin-bottom: 10px;
+  width: 100%;
+  height: 40px;
+  padding-left: 10px;
+  font-size: 16px;
+`;
+
+const ErrorMsg = styled.p`
+  background-color: tomato;
+  color: white;
+  border-radius: 5px;
+  padding: 0.2em 0.8em;
+  font-size: 14px;
+  margin-top: -5px;
+
+  &:empty {
+    display: none;
   }
 `;
 
 export default function RegisterPage() {
   const formik = useFormik({
     initialValues: {
-      email: '',
+      email: 'george.bluth@reqres.in',
       age: '',
       password: '',
       password2: '',
@@ -33,14 +53,31 @@ export default function RegisterPage() {
         .min(8, 'Password must contain at least 8 symbols'),
     }),
     onSubmit: (value) => {
-      console.log(value);
+      console.log('value ===', value);
+      if (value.password === value.password2) {
+        handleRegister(value);
+      }
     },
   });
 
+  function handleRegister(userCredentialsObj) {
+    axios
+      .post('https://reqres.in/api/register', userCredentialsObj)
+      .then((ats) => console.log('ats ===', ats))
+      .catch((error) => {
+        // prisiloginti nepavyko
+        console.warn('ivyko klaida:', error);
+        console.log('error.response.data.error ===', error.response.data.error);
+        // formik.errors.email = error.response.data.error;
+        // formik.setErrors({ email: error.response.data.error });
+        formik.setErrors({ email: 'Email or password not found' });
+      });
+  }
+
   return (
     <Wrap>
-      <Form>
-        <input
+      <Form onSubmit={formik.handleSubmit}>
+        <Input
           type='text'
           placeholder='Email'
           onChange={formik.handleChange}
@@ -48,9 +85,10 @@ export default function RegisterPage() {
           id='email'
           onBlur={formik.handleBlur}
         />
-        {formik.touched.email &&
-          (formik.errors.email ? <p>{formik.errors.email}</p> : null)}
-        <input
+        {formik.touched.email && formik.errors.email && (
+          <ErrorMsg>{formik.errors.email}</ErrorMsg>
+        )}
+        <Input
           type='number'
           placeholder='Age'
           onChange={formik.handleChange}
@@ -58,9 +96,10 @@ export default function RegisterPage() {
           id='age'
           onBlur={formik.handleBlur}
         />
-        {formik.touched.age &&
-          (formik.errors.age ? <p>{formik.errors.age}</p> : null)}
-        <input
+        {formik.touched.age && formik.errors.age && (
+          <ErrorMsg>{formik.errors.age}</ErrorMsg>
+        )}
+        <Input
           type='password'
           placeholder='Password'
           onChange={formik.handleChange}
@@ -68,9 +107,10 @@ export default function RegisterPage() {
           id='password'
           onBlur={formik.handleBlur}
         />
-        {formik.touched.password &&
-          (formik.errors.password ? <p>{formik.errors.password}</p> : null)}
-        <input
+        {formik.touched.password && formik.errors.password && (
+          <ErrorMsg>{formik.errors.password}</ErrorMsg>
+        )}
+        <Input
           type='password'
           placeholder='Repeat Password'
           onChange={formik.handleChange}
@@ -78,8 +118,10 @@ export default function RegisterPage() {
           id='password2'
           onBlur={formik.handleBlur}
         />
-        {formik.touched.password2 &&
-          (formik.errors.password2 ? <p>{formik.errors.password2}</p> : null)}
+        {formik.errors.password2 && formik.touched.password2 && (
+          <ErrorMsg>{formik.errors.password2}</ErrorMsg>
+        )}
+        <button type='submit'>Register</button>
       </Form>
     </Wrap>
   );

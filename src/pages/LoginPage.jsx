@@ -141,7 +141,7 @@ export default function LoginPage() {
           {formik.errors.password && formik.touched.password && (
             <ErrorMsg>{formik.errors.password}</ErrorMsg>
           )}
-          <SubmitBnt>Login</SubmitBnt>
+          <SubmitBnt type='submit'>Login</SubmitBnt>
         </FormContainer>
       )}
     </Wrap>
