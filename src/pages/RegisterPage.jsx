@@ -70,7 +70,7 @@ export default function RegisterPage() {
       .then(() => {
         console.log('Sveiki sugryze :', userCredentialsObj.email);
         setLoginStatus('success');
-        // console.log('loginStatus ===', loginStatus);
+        console.log('loginStatus ===', loginStatus);
       })
       .catch((error) => {
         // prisiloginti nepavyko
@@ -78,6 +78,7 @@ export default function RegisterPage() {
         // formik.errors.email = error.response.data.error;
         // formik.setErrors({ email: error.response.data.error });
         setLoginStatus('failed');
+        console.log('loginStatus ===', loginStatus);
         // console.log('loginStatus ===', loginStatus);
         formik.setErrors({ email: 'Email or password not found' });
       });

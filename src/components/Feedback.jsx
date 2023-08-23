@@ -1,8 +1,17 @@
-export default function Feedback(status) {
+import { styled } from 'styled-components';
+const Success = styled.h3`
+  font-size: 24px;
+  color: green;
+`;
+const Failed = styled.h3`
+  font-size: 32px;
+  color: red;
+`;
+export default function Feedback(props) {
   return (
     <div>
-      {status === 'success' && <h3>Sveikiname prisijungus</h3>}
-      {status === 'failed' && <h3>Bandykite dar karta</h3>}
+      {props.status === 'success' && <Success>Sveikiname prisijungus</Success>}
+      {props.status === 'failed' && <Failed>Bandykite dar karta</Failed>}
     </div>
   );
 }
