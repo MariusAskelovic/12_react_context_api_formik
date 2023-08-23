@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { useContext, useState } from 'react';
 import AuthContext from '../store/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Title = styled.h1`
   font-size: 35px;
@@ -50,6 +51,7 @@ const ErrorMsg = styled.p`
 export default function LoginPage() {
   const ctx = useContext(AuthContext);
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -91,6 +93,9 @@ export default function LoginPage() {
           console.log('Login pavyko');
           setLoginSuccess(true);
           ctx.login(formik.values.email);
+          //   replace: true pakeicia psl, todel spaudziant back
+          //   grysim ne i Login, o i pries tai
+          navigate('/vip', { replace: true });
         }
       })
       .catch((error) => {
